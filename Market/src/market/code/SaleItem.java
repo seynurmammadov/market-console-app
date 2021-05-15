@@ -38,4 +38,12 @@ public class SaleItem {
     public void setCount(int count) {
         this.count = count;
     }
+
+    public boolean isReturned() {
+        return isReturned;
+    }
+
+    public void setReturned(boolean returned) {
+        isReturned = returned;
+    }
 }
