@@ -26,14 +26,11 @@ public class Market implements IMarketable {
         products.put(product.id,product);
         System.out.println("Product successfully added!");
         System.out.println("Product code: " + product.id);
-        Helper.sleep();
     }
-
     @Override
     public Product findProductByCode(String code) {
         return products.get(code);
     }
-
     @Override
     public void editProduct(String code ,String name, Category category, int count, float price) {
         Product product=  products.get(code);
@@ -42,14 +39,12 @@ public class Market implements IMarketable {
         product.setCount(count);
         product.setPrice(price);
     }
-
     @Override
     public void deleteProduct(String code) {
         products.remove(code);
         System.out.println("Product deleted!");
         Helper.sleep();
     }
-
     @Override
     public List<Product> getProdByCat(int index) {
        List<Product> list = new ArrayList<>();
@@ -61,31 +56,23 @@ public class Market implements IMarketable {
        }
        return list;
     }
-
     @Override
     public List<Product> getProdByPriceRange(float min, float max) {
-        List<Product> list = new ArrayList<>();
-        for (Product product : products.values()){
-            if(product.getPrice()>=min && product.getPrice()<=max){
-                list.add(product);
-            }
-        }
-        return list;
+        return getByPrice(products,min,max);
     }
-
     @Override
     public List<Product> getProdByRegex(String text) {
         List<Product> list = new ArrayList<>();
         for (Product product : products.values()){
-            if(product.getName().contains(text)){
+            if(product.getName().toLowerCase().contains(text.toLowerCase())){
                 list.add(product);
             }
         }
         return list;
     }
 
-    //Category manipulation
 
+    //Category manipulation
     public LinkedList<Category> getCategories() {
         return categories;
     }
@@ -113,7 +100,6 @@ public class Market implements IMarketable {
         }
         categories.add(category);
         System.out.println("Category added!");
-        Helper.sleep();
     }
     @Override
     public void editCategory(String name, int index) {
@@ -128,11 +114,11 @@ public class Market implements IMarketable {
         Helper.sleep();
     }
 
+    //Sales manipulation
     @Override
     public HashMap<String, Sale> getAllSales() {
         return sales;
     }
-
     @Override
     public void addSale(List<SaleItem> saleItems) {
         float price =0;
@@ -152,7 +138,6 @@ public class Market implements IMarketable {
         }
         System.out.println("Sale successfully added!");
         System.out.println("Sale id: " + newSale.id);
-        Helper.sleep();
     }
     @Override
     public void returnSaleItem(Sale sale,SaleItem saleItems,int count) {
@@ -174,7 +159,6 @@ public class Market implements IMarketable {
             Helper.sleep();
         }
     }
-
     @Override
     public void returnSale(Sale sale) {
         if(sale.isReturned()){
@@ -183,24 +167,43 @@ public class Market implements IMarketable {
         }
         sale.setReturned(true);
         for (SaleItem item:sale.getSaleItemsList()) {
+            if(!item.isReturned()){
+                Product product = nullableProduct(item);
+                product.setCount(product.getCount()+item.getCount());
+            }
             item.setReturned(true);
-            Product product = nullableProduct(item);
-            product.setCount(product.getCount()+item.getCount());
         }
     }
-
     @Override
-    public List<Sale> getSalesByDateRange(LocalDate min, LocalDate max) {
+    public List<Sale> getSalesByDateRange(LocalDateTime min, LocalDateTime max) {
         List<Sale> list = new ArrayList<>();
-
         for (Sale sale : sales.values()){
-            if(sale.getDateTime().isAfter(min.atStartOfDay()) && sale.getDateTime().isBefore(max.atStartOfDay())){
+            if(sale.getDateTime().isAfter(min) && sale.getDateTime().isBefore(max)){
                 list.add(sale);
             }
         }
         return list;
     }
+    @Override
+    public List<Sale> getSalesByPriceRange(float min, float max) {
+        return getByPrice(sales,min,max);
+    }
+    @Override
+    public List<Sale> getSalesByDate(LocalDate date) {
+        List<Sale> list = new ArrayList<>();
+        for (Sale sale : sales.values()){
+            if(sale.getDateTime().toLocalDate().equals(date)){
+                list.add(sale);
+            }
+        }
+        return list;
+    }
+    @Override
+    public Sale findSaleByCode(String code) {
+        return sales.get(code);
+    }
 
+    //additional methods
     public Product nullableProduct(SaleItem item){
         Product product = products.get(item.getProduct().id);
         if(product==null){
@@ -208,14 +211,18 @@ public class Market implements IMarketable {
             product.setCount(0);
             products.put(product.id,product);
         }
-       return product;
+        return product;
     }
-    @Override
-    public Sale findSaleByCode(String code) {
-        return sales.get(code);
-    }
-
     public boolean isExistInCategory(Category category){
         return categories.stream().anyMatch((c)-> c.getName().equals(category.getName()));
+    }
+    public <T extends IPrice> List<T> getByPrice(HashMap<String,T> map,float min,float max){
+        List<T> list = new ArrayList<>();
+        for (T mapItem : map.values()){
+            if(mapItem.getPrice()>=min && mapItem.getPrice()<=max){
+                list.add(mapItem);
+            }
+        }
+        return list;
     }
 }

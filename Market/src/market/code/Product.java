@@ -1,6 +1,6 @@
 package market.code;
 
-public class Product {
+public class Product implements IPrice {
     final String id;
     private String name;
     private float price;
@@ -8,7 +8,7 @@ public class Product {
     private int count;
 
     public Product( String name, Category category, int count, float price) {
-        this.id = IdGenerator.generate();
+        this.id = Generator.generateId();
         this.name = name;
         this.category = category;
         this.count = count;

@@ -1,6 +1,7 @@
 package market.code;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,6 +25,8 @@ public interface IMarketable {
      Sale findSaleByCode(String code) ;
      void returnSaleItem(Sale sale,SaleItem saleItems,int count);
      void returnSale(Sale sale);
-     List<Sale> getSalesByDateRange(LocalDate min,LocalDate max) ;
+     List<Sale> getSalesByDateRange(LocalDateTime min, LocalDateTime max) ;
+     List<Sale> getSalesByPriceRange(float min, float max) ;
+     List<Sale> getSalesByDate(LocalDate date) ;
 
 }

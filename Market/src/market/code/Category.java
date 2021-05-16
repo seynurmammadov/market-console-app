@@ -5,7 +5,7 @@ public class Category {
     private String name;
 
     public Category( String name) {
-        this.id = IdGenerator.generate();
+        this.id = Generator.generateId();
         this.name = name;
     }
 

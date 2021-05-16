@@ -1,6 +1,7 @@
 package market.code;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Helper {
@@ -45,7 +46,14 @@ public class Helper {
       return new Scanner(System.in);
     }
     public static boolean checkDate(String str){
-        return  str.matches("^([0-2][0-9]|(3)[0-1])(\\/)(((0)[0-9])|((1)[0-2]))(\\/)\\d{4}$");
-
+        DateTimeFormatter format= DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        try {
+            format.parse(str);
+            return true;
+        }
+        catch(Exception e){
+            return false;
+        }
     }
+
 }

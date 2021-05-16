@@ -9,7 +9,7 @@ public class SaleItem {
     private boolean isReturned=false;
 
     public SaleItem(Product product, int count) {
-        this.id = IdGenerator.generate();
+        this.id = Generator.generateId();
         this.product = product;
         this.count = count;
         this.currentPrice = product.getPrice();

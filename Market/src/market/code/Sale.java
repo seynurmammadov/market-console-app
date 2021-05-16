@@ -3,7 +3,7 @@ package market.code;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Sale {
+public class Sale implements IPrice {
     private static long totalSalesCount =0L;
     final String id;
     private float price;
@@ -11,7 +11,7 @@ public class Sale {
     private LocalDateTime dateTime;
     private boolean isReturned=false;
     public Sale( float price, List<SaleItem> saleItemsList) {
-        this.id = IdGenerator.generate();
+        this.id = Generator.generateId();
         this.dateTime = LocalDateTime.now();
 
         this.price = price;
